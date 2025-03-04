@@ -1,0 +1,29 @@
+import dlt
+from pyspark.sql.functions import *
+
+# 1️⃣ Read CDC Data from Foreign Catalog
+@dlt.table(
+    comment="Raw CDC data from foreign catalog"
+)
+def cdc_raw():
+    return dlt.read_stream("foreign_catalog.test_schema.test123_CT")  # Fully Qualified Name
+
+# 2️⃣ Transform CDC Data
+@dlt.view(
+    comment="Transformed CDC data with change tracking"
+)
+def cdc_transformed():
+    return (
+        dlt.read_stream("cdc_raw")
+        .withColumn("processed_timestamp", current_timestamp())
+    )
+
+# 3️⃣ Apply CDC Changes into Target Delta Table
+dlt.apply_changes(
+    target="foreign_catalog.test_schema.test123_delta",  # Target in Foreign Catalog
+    source="cdc_transformed",
+    keys=["ID"],  # Primary Key
+    sequence_by=col("T_ORDER"),  # Change sequence column
+    apply_as_deletes=expr("__$operation = 2"),  # CDC DELETE Handling
+    stored_as_scd_type=2  # Maintain history (SCD Type 2)
+)
