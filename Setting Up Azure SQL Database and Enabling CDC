@@ -1,45 +1,45 @@
--- 1. Create a new database
-CREATE DATABASE test123;
-GO
-
--- 2. Use the newly created database
-USE test123;
-GO
-
--- 3. Create a new table
-CREATE TABLE dbo.test123 (
-    id INT PRIMARY KEY,
-    email VARCHAR(255),
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    gender VARCHAR(10),
-    the_order INT
+-- 1.  Create a new table
+CREATE TABLE test.TEST123
+(
+ID INT NOT NULL,
+EMAIL VARCHAR(200),
+FIRST_NAME VARCHAR(200),
+LAST_NAME VARCHAR(200),
+GENDER VARCHAR(200),
+T_ORDER DATETIME,
+PRIMARY KEY(ID)
 );
-GO
 
--- 4. Enable Change Data Capture (CDC) at the database level
+-- 2. Enable Change Data Capture (CDC) at the database level
 EXEC sys.sp_cdc_enable_db;
 GO
 
--- 5. Enable Change Data Capture (CDC) at the table level
+-- 3. Enable Change Data Capture (CDC) at the table level
 EXEC sys.sp_cdc_enable_table
-    @source_schema = N'dbo',
-    @source_name   = N'test123',
-    @role_name     = NULL;
+  @source_schema 'test',
+  @source_name TEST123',
+  @role_name "NULL",
 GO
 
 -- 6. Insert sample data
-INSERT INTO dbo.test123 (id, email, first_name, last_name, gender, the_order)
-VALUES
-    (1, 'john.doe@example.com', 'John', 'Doe', 'Male', 1),
-    (2, 'jane.smith@example.com', 'Jane', 'Smith', 'Female', 2),
-    (3, 'peter.jones@example.com', 'Peter', 'Jones', 'Male', 3),
-    (4, 'mary.brown@example.com', 'Mary', 'Brown', 'Female', 4);
-GO
+INSERT INTO test.TEST123 VALUES (1, 'apo@gmail.com', 'Apo', 'test', 'M', GETDATE());
+INSERT INTO test.TEST123 VALUES (2, 'john@gmail.com','john', 'johntest', 'M', GETDATE());
+INSERT INTO test.TEST123 VALUES (3, 'Katy@gmail.com', 'Katy', 'Katytest', 'F', GETDATE());
+INSERT INTO test.TEST123 VALUES (4, 'Paul@gmail.com', 'Paul', 'Paultest', 'M', GETDATE());
+INSERT INTO test.TEST123 VALUES(5, 'Paul@gmail.com', NULL, NULL, 'M', GETDATE());
 
 -- 7. Perform DML operations (delete and update)
-DELETE FROM dbo.test123 WHERE id = 1;
-GO
+DELETE FROM test.TEST1231
+WHERE ID-1;
+
+UPDATE test.TEST123
+SET LAST NAME='test12345"
+WHERE ID=2;
+
+UPDATE test.TEST123
+SET LAST_NAME='new_update_surname'
+WHERE ID=2;
+
 
 UPDATE dbo.test123 SET email = 'jane.updated@example.com' WHERE id = 2;
 GO
